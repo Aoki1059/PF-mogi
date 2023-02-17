@@ -1,7 +1,7 @@
 class Public::CustomersController < ApplicationController
   before_action :authenticate_customer!
-  before_action :ensure_guest_customer, only: [:edit]
-  
+  before_action :ensure_guest_customer, only: [:edit, :update, :unsubscribe, :withdraw]
+
   def show
     @customer = Customer.find(params[:id])
     @posts = @customer.posts.order('created_at DESC').page(params[:page]).per(6)
@@ -18,7 +18,7 @@ class Public::CustomersController < ApplicationController
   def edit
     @customer = Customer.find(params[:id])
   end
-  
+
   def update
     @customer = current_customer
     if @customer.update(customer_params)
@@ -28,28 +28,28 @@ class Public::CustomersController < ApplicationController
        render :edit
     end
   end
-  
+
   def unsubscribe
   end
 
   def withdraw
     @customer = current_customer
-    @customer.destroy
+    @customer.update(is_deleted: true)
     reset_session
     flash[:notice] = "退会処理を実行いたしました"
     redirect_to root_path
   end
-  
+
   private
 
   def customer_params
     params.require(:customer).permit(:name, :introduction, :profile_image)
   end
-  
+
   def ensure_guest_customer
-    @customer = Customer.find(params[:id])
+    @customer = current_customer
     if @customer.name == "ゲスト"
-      redirect_to customer_path(current_customer) , notice: 'ゲストユーザーはプロフィール編集画面へ遷移できません。'
+      redirect_to customer_path(current_customer)
     end
   end
 end

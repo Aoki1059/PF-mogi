@@ -35,7 +35,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get "/" => "homes#top"
-    patch "/customers/withdraw" => "customers#withdraw"
+    # patch "/customers/withdraw" => "customers#withdraw"
     resources :customers, only: [:index, :show, :edit, :update]
     resources :posts, only:[:index, :show, :destroy]
     get "search" => "searches#search"
