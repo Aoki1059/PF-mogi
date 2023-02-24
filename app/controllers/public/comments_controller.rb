@@ -16,7 +16,6 @@ before_action :ensure_guest_customer, only: [:create, :destroy]
   end
 
   private
-
   def comment_params
     params.require(:comment).permit(:comment)
   end
